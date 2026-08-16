@@ -1,0 +1,38 @@
+name: AutoRun
+
+on:
+  schedule:
+    - cron: "* * * * 1,3,5,7"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.14"
+        
+      - name: Install dependencies
+        run: | #複数行の実行
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Python
+        run: python get_mirapuri_score.py
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email ${{ secrets.EMAIL }}
+          git config --local user.name ${{ secrets.USERNAME}}
+          git add .
+          git commit -m "scheduled execution"
+          git pull
+          git push origin main
+
+
+        
+
+
