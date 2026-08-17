@@ -1,3 +1,4 @@
 requests >= 2.32.5
 beautifulsoup4 >= 4.14.3
 bs4 >= 0.0.2
+html5lib >= 1.1
