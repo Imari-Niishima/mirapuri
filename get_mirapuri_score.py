@@ -34,11 +34,6 @@ if __name__ == "__main__":
             if cand_id.isdecimal() == True:
                 id_list.append(cand_id)
 
-    #__file__はこのファイルの絶対パス、os.pardirは..で1つ上に行く
-    #カレントディレクトリの一つ上を指すようにしている
-    directory_str = os.path.join(__file__, os.pardir)
-    os.chdir(directory_str)
-
     c = 0
    
     #json形式で出力するためのリスト
