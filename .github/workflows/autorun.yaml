@@ -26,11 +26,9 @@ jobs:
       - name: Run Python
         run: python get_mirapuri_score.py
 
-        name: Add safe directory
-        run: git config --global --add safe.directory $PWD
-
       - name: Commit and Push
         run: |
+          git config --global --add safe.directory $PWD
           git config --local user.email ${{ secrets.EMAIL }}
           git config --local user.name ${{ secrets.USERNAME}}
           git add .
