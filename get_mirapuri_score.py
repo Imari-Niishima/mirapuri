@@ -88,7 +88,7 @@ if __name__ == "__main__":
         json.dump(output, f, indent=2, ensure_ascii=False)
         
     #webから読み込むファイルを毎回上書きして出力
-    with open("scores/scores.json", mode="w", encoding="utf_8") as f:
+    with open("scores.json", mode="w", encoding="utf_8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     
     print(output_json, " make!")
