@@ -49,6 +49,7 @@ if __name__ == "__main__":
         json_items = json.load(f)        
 
     #各webページに対して処理
+    diff_count = 0
     for each_id in id_list:
         page_url = "https://mirapri.com/" + each_id
 
@@ -66,9 +67,12 @@ if __name__ == "__main__":
         
         #過去にいいね数を計測していた場合は差分も求める。なければ0のまま
         diff = 0
+        #過去に取ったページ一覧と今回取得したページ名が一致する部分を探す
         for i in range(len(json_items)):
             if title == json_items[i]["name"]:
                 diff = int(score) - int(json_items[i]["scores"])
+                if diff != 0:
+                    diff_count += 1
                 break
         
         output.append({"name":title, "scores":score, "diff":diff})
@@ -79,9 +83,12 @@ if __name__ == "__main__":
         #1秒停止
         time.sleep(1)
 
-    #今日の日付を出力ファイル名にする
+    #今日の日付を出力ファイル名にする。いいね数に変化があれば名前に+をつける
     d_today = datetime.date.today()
-    output_json = "scores/score_" + str(d_today) + ".json"
+    if diff_count != 0:
+        output_json = "scores/score_" + str(d_today) + "+.json"
+    else:
+        output_json = "scores/score_" + str(d_today) + ".json"
 
     #jsonファイル出力
     with open(output_json, mode="w", encoding="utf_8") as f:
