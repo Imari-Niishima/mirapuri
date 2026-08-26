@@ -49,7 +49,6 @@ if __name__ == "__main__":
         json_items = json.load(f)        
 
     #各webページに対して処理
-    diff_count = 0
     for each_id in id_list:
         page_url = "https://mirapri.com/" + each_id
 
@@ -71,8 +70,6 @@ if __name__ == "__main__":
         for i in range(len(json_items)):
             if title == json_items[i]["name"]:
                 diff = int(score) - int(json_items[i]["scores"])
-                if diff != 0:
-                    diff_count += 1
                 break
         
         output.append({"name":title, "scores":score, "diff":diff})
