@@ -45,9 +45,11 @@ if __name__ == "__main__":
     json_list.sort()  
     
     #jsonファイルの中身をリスト形式で読み込み
+    
     with open(json_list[-1], mode="r", encoding="utf_8") as f:
-        json_items = json.load(f)        
-
+        json_items = json.load(f)
+    
+    diff_count = 0
     #各webページに対して処理
     for each_id in id_list:
         page_url = "https://mirapri.com/" + each_id
@@ -70,6 +72,7 @@ if __name__ == "__main__":
         for i in range(len(json_items)):
             if title == json_items[i]["name"]:
                 diff = int(score) - int(json_items[i]["scores"])
+                diff_count += 1
                 break
         
         output.append({"name":title, "scores":score, "diff":diff})
