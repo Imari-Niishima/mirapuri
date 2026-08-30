@@ -72,7 +72,8 @@ if __name__ == "__main__":
         for i in range(len(json_items)):
             if title == json_items[i]["name"]:
                 diff = int(score) - int(json_items[i]["scores"])
-                diff_count += 1
+                if diff != 0:
+                    diff_count += 1
                 break
         
         output.append({"name":title, "scores":score, "diff":diff})
