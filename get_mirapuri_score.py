@@ -8,6 +8,7 @@ import json
 import time
 import glob
 import sys
+import socket
 from bs4 import BeautifulSoup
 
 if __name__ == "__main__":
@@ -51,38 +52,41 @@ if __name__ == "__main__":
     
     diff_count = 0
     #各webページに対して処理
-    for each_id in id_list:
-        page_url = "https://mirapri.com/" + each_id
+    #HTTPのKeep-AliveによるTCPの接続を再利用してWinError 10048を回避
+    with requests.Session() as session:
+        for each_id in id_list:
+            page_url = "https://mirapri.com/" + each_id
 
-        html = requests.get(page_url).text
-        soup = BeautifulSoup(html, "html5lib")
+            #html = requests.get(page_url).text
+            html = session.get(page_url).text
+            soup = BeautifulSoup(html, "html5lib")
 
-        #F12キーで要素を取りたいところをクリック、右の青く光ったところを右クリックしてコピー>selectorをコピーしてsoup.selectに張り付ける。nth-childには気をつけろ
-        elems_name = soup.select('#photoDetail > article > div.mainText > div.information > div.leftContent > div.title > h2')
-        title = str(elems_name[0].contents[0])
-        #print(elems_name[0].contents[0])
+            #F12キーで要素を取りたいところをクリック、右の青く光ったところを右クリックしてコピー>selectorをコピーしてsoup.selectに張り付ける。nth-childには気をつけろ
+            elems_name = soup.select('#photoDetail > article > div.mainText > div.information > div.leftContent > div.title > h2')
+            title = str(elems_name[0].contents[0])
+            #print(elems_name[0].contents[0])
+                
+            elems_score = soup.select('#like-button > span.like-count')
+            score = str(elems_score[0].contents[0])
+            #print(elems_score[0].contents[0])
             
-        elems_score = soup.select('#like-button > span.like-count')
-        score = str(elems_score[0].contents[0])
-        #print(elems_score[0].contents[0])
-        
-        #過去にいいね数を計測していた場合は差分も求める。なければ0のまま
-        diff = 0
-        #過去に取ったページ一覧と今回取得したページ名が一致する部分を探す
-        for i in range(len(json_items)):
-            if title == json_items[i]["name"]:
-                diff = int(score) - int(json_items[i]["scores"])
-                if diff != 0:
-                    diff_count += 1
-                break
-        
-        output.append({"name":title, "scores":score, "diff":diff})
+            #過去にいいね数を計測していた場合は差分も求める。なければ0のまま
+            diff = 0
+            #過去に取ったページ一覧と今回取得したページ名が一致する部分を探す
+            for i in range(len(json_items)):
+                if title == json_items[i]["name"]:
+                    diff = int(score) - int(json_items[i]["scores"])
+                    if diff != 0:
+                        diff_count += 1
+                    break
+            
+            output.append({"name":title, "scores":score, "diff":diff})
 
-        c += 1
-        print(str(c) + "/" + str(len(id_list)) + " finish!")
-        
-        #1秒停止
-        time.sleep(1)
+            c += 1
+            print(str(c) + "/" + str(len(id_list)) + " finish!")
+            
+            #1秒停止
+            time.sleep(1)
 
     #今日の日付を出力ファイル名にする。いいね数に変化があれば名前に+をつける
     d_today = datetime.date.today()
