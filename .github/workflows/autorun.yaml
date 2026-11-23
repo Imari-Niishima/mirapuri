@@ -33,6 +33,7 @@ jobs:
           git config --local user.name ${{ secrets.USERNAME}}
           git add .
           git commit -m "scheduled execution"
+          git pull origin main --rebas
           git push origin main
 
 
